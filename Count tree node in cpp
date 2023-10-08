@@ -1,0 +1,51 @@
+#include <iostream>
+using namespace std;
+
+// Definition for a binary tree node
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+int countNodes(TreeNode* root) {
+    if (root == nullptr)
+        return 0;
+
+    int leftHeight = 0, rightHeight = 0;
+    TreeNode *leftNode = root, *rightNode = root;
+
+    // Calculate the height of the left and right subtrees
+    while (leftNode) {
+        leftHeight++;
+        leftNode = leftNode->left;
+    }
+
+    while (rightNode) {
+        rightHeight++;
+        rightNode = rightNode->right;
+    }
+
+    // If the height of left and right subtrees is equal, it means the left subtree is full
+    if (leftHeight == rightHeight)
+        return (1 << leftHeight) - 1; // 2^h - 1
+
+    // If the heights are not equal, it means the right subtree is full up to h-1, recursively count nodes in left and right subtrees
+    return 1 + countNodes(root->left) + countNodes(root->right);
+}
+
+int main() {
+    // Example usage
+    TreeNode* root = new TreeNode(1);
+    root->left = new TreeNode(2);
+    root->right = new TreeNode(3);
+    root->left->left = new TreeNode(4);
+    root->left->right = new TreeNode(5);
+    root->right->left = new TreeNode(6);
+
+    int numNodes = countNodes(root);
+    cout << "Number of nodes in the complete binary tree: " << numNodes << endl;
+
+    return 0;
+}
